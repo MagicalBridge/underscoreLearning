@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        // Create a safe reference to the Underscore object for use below.
+        // 创建一个 核心的underscore对象引用方便下面使用;
+        // instanceof 操作符用于 判断指定的对象是否在构造函数的原型链上面；
+        //`_` 其实是一个构造函数
+        //支持无 new 调用的构造函数（思考 jQuery 的无 new 调用） 之后在jq源码的解析中会详细介绍；
+        //将传入的参数（实际要操作的数据）赋值给 this._wrapped 属性
+        //OOP(Object Oriented Programming) 调用时，_ 相当于一个构造函数
+        //each 等方法都在该构造函数的原型链上
+        //// _([1, 2, 3]).each(alert)
+        // _([1, 2, 3]) 相当于无 new 构造了一个新的对象
+        // 调用了该对象的 each 方法，该方法在该对象构造函数的原型链上
+
+        var _ = function(obj) { //obj = {name: "louis", job: "Architect", sex: "man"}
+            // 如果 obj 已经是 `_` 函数的实例，则直接返回 obj
+            if (obj instanceof _) return obj;
+            // 如果不是 `_` 函数的实例
+            // 则调用 new 运算符，返回实例化的对象
+            if (!(this instanceof _)) return new _(obj);
+            // 将 obj 赋值给 this._wrapped 属性
+            this._wrapped = obj;
+        };
+        var data = {
+            "name": "louis",
+            "job": "Architect",
+            "sex": "man"
+        };
+        var wrapfoo = _(data); //这里使用的是全局的调用
+
+        // 上面函数调用的时候进入核心构造函数,
+        // data不是原型对象下面的不再构造的原型上面 直接走
+        // 直接走第二个 if 如果是全局调用 this 指向window
+        // 如果在函数内部new 出来一个对象 这个对象
+        // 经历了四个步骤
+        // 1.创建一个对象
+        // 2.将构造函数的作用域赋值给对象；因此this指向了这个新的对象;
+        // 3.执行构造函数中的代码,为这个对象添加属性;
+        // 4.返回新对象;
+
+        // 上述的执行过程中 this instance _ 这个this 指向 window
+        // 显然并不在 函数的作用域内部 此时new 构造函数
+        // 重新执行构造函数 this 指向当前的这个对象 当然也在改对象的
+        // 原型链上面,此时执行最后一段代码将obj 属性挂载在对象的
+        // wrapper 属性上面;
+    </script>
+</body>
+
+</html>

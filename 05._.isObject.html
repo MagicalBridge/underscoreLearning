@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        // && (逻辑与) 和||（逻辑或）混合使用的时候要注意他们的优先级：
+        // && (逻辑与) 优先级高于||（逻辑或）
+        // return a && b || c ,
+        //根据a来判断返回值，a 是 false 则肯定返回 c；如果 b , c 都是 true ，
+        //那么我们就可以根据 a 来决定b 还是 c ，如果 a 是 false 则返回 c，如果a是true 则返回 b
+
+        //return a || b && c
+        //根据优先级相当于先算 b && c ,然后和a 相 或；如果a是true，则返回a，不论是b或c，
+        //如果a是false，则如果b是false，返回b，如果b是true，返回c；
+
+
+        // isObject_.isObject(value) 
+        //如果object是一个对象，返回true。需要注意的是JavaScript数组和函数是对象，字符串和数字不是。
+        _.isObject = function(obj) {
+            // 使用typeof 操作符判断传入的对象的类型;
+            var type = typeof obj;
+            // 返回值是一个 布尔值;
+            // 或运算符 首先判断左边的 如果是函数 右边的不需要判断 返回true
+            // 这里认为 function 和 object 都是对象;
+
+            // !!obj 一般用来将后面的表达式强制转换为布尔类型的数据（boolean），
+            // 也就是只能是true或者false;
+            return type === 'function' || type === 'object' && !!obj;
+        };
+    </script>
+</body>
+
+</html>

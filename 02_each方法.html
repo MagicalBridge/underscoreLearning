@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>_each</title>
+    <script type="text/javascript" src="lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        // The cornerstone, an `each` implementation, aka `forEach`.
+        // Handles raw objects in addition to array-likes. Treats all
+        // sparse array-likes as if they were dense.
+        // each是一个比较基础的迭代方法,和es5 forEach 类似
+        // 除了可以处理类数组 还可以处理原生的对象,
+        // 遍历数组或者对象的每个元素 也就是根据数据的长度反复执行迭代函数
+
+
+        // 第一个参数是数组或者（类数组）或者对象;
+        // 第二个参数是迭代方法 ，对数组或者对象的每一个元素都执行该方法；
+        // 该方法又能传入三个参数,(item,index,array)((value, key, obj) for object)
+        // 与es5中Array.prototype.forEach() 传参方式一致。
+        // 第三个参数（可省略）确定第二个参数 iteratee 函数中的（可能有的）this 指向
+        // 即 iteratee 中出现的（如果有）所有 this 都指向 context
+        // notice: 不要传入一个带有 key 类型为 number 的对象！
+        // notice: _.each 方法不能用 return 跳出循环（同样，Array.prototype.forEach 也不行）
+        _.each = _.forEach = function(obj, iteratee, context) {
+            // 根据context 确定不同的迭代函数
+            // 具体的函数实现之后会详细分析;
+            iteratee = optimizeCb(iteratee, context);
+            var i, length;
+            // 如果是数组,
+            // 默认不会传入{length:10}这样的数据  否则会失效
+            // isArrayLike 函数接收一个类数组对象返回值是布尔类型的值这个函数实现过程会单独分析;
+            if (isArrayLike(obj)) {
+                // 遍历每一个元素 迭代函数不断执行 直到遍历完成;
+                for (i = 0, length = obj.length; i < length; i++) {
+                    iteratee(obj[i], i, obj);
+                }
+            } else {
+                //如果是对象  获取到对象中的所有的key值;
+                var keys = _.keys(obj);
+                // 遍历处理对象的所有value值;
+                for (i = 0, length = keys.length; i < length; i++) {
+                    iteratee(obj[keys[i]], keys[i], obj); //(value key obj)
+                }
+            }
+            // 返回obj 参数
+            // 供链式调用（Returns the list for chaining）
+            // 仅 OOP 有效
+            return obj;
+        };
+
+
+
+
+
+
+
+        // //  下面这个函数是一个简单的数组求和函数,
+        function sum(list) {
+            var sum = 0;
+            for (var i = 0; i < list.length; i++) {
+                sum += list[i];
+            }
+            return sum;
+        }
+        console.log(sum(_.each([1, 2, 3], sum)));
+        // console.log(sum(arr));
+        // 在执行 optimizeCb 对alert函数进行包装的时候断点调试看出
+        // func = f alert() context = undefined argCount = undefined
+        // 执行到函数的第一行的判断的时候 使用了 context === void 0
+        // 这样写的好处是什么
+        //   void其实是javascript中的一个函数,接受一个参数，返回值永远是undefined。可以说，使用void目的就是为了得到javascript中的undefined。这样写是为了得到真正的undefined
+        //   执行这个函数 由于context 是undefined 所以将alert这个函数 本身返回
+        //  var optimizeCb = function(func, context, argCount) {
+        //
+        //   if (context === void 0) return func;
+        //   switch (argCount == null ? 3 : argCount) {
+        //     case 1: return function(value) {
+        //       return func.call(context, value);
+        //     };
+        //     case 2: return function(value, other) {
+        //       return func.call(context, value, other);
+        //     };
+        //     case 3: return function(value, index, collection) {
+        //       return func.call(context, value, index, collection);
+        //     };
+        //     case 4: return function(accumulator, value, index, collection) {
+        //       return func.call(context, accumulator, value, index, collection);
+        //     };
+        //   }
+        //   return function() {
+        //     return func.apply(context, arguments);
+        //   };
+        // };
+    </script>
+</body>
+
+</html>

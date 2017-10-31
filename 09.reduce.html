@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>reduce</title>
+    <script src="lib/underscore.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+    // reduce方法把list中元素归结为一个单独的数值。
+    // Memo是reduce函数的初始值，reduce的每一步都需要由iteratee返回
+    // 下面的这个代码
+        var sum = _.reduce([1, 2] ,function(memo, num) {
+            return memo + num;
+        }, 1);
+        // var sum = _.reduce({ one: 2,two: 2,three: 3}, function(memo, num) {
+        //     return memo + num;
+        // }, 0);
+        console.log(sum);
+    // 在函数createReduce函数中声明了一个函数 iterator,
+    // 这个createReduce执行的时候返回一个函数,
+    // 里面使用到了 isArrayLike 函数，还是用到了keys  函数
+    // isArrayLike 函数判断是不是类数组 返回值是一个bollen值
+    // keys掺入一个对象返回一个数组。
+    function createReduce(dir) {
+
+        // obj = (2) [1, 2],iteratee = ƒ (memo, num), memo = 0, keys = false, index = 0 ,length = 2
+        function iterator(obj, iteratee, memo, keys, index, length) {
+            // index 是不是大于零 并且 index 小于 传入的对象的长度 index = index+dir;
+            for (; index >= 0 && index < length; index += dir) {
+                // for 循环的实质是什么首先执行的是index >= 0 && index < length;
+                // 然后执行的是对currentKey 赋值，走完一个for循环之后执行index += dir
+                // 重新判断一下 index >= 0 && index < length 这个循环条件最后return 一个meme;
+                var currentKey = keys ? keys[index] : index;
+                memo = iteratee(memo, obj[currentKey], currentKey, obj);
+            }
+            return memo;
+        }
+        return function(obj, iteratee, memo, context) {
+            iteratee = optimizeCb(iteratee, context, 4);
+            // 这里我们想要获取到对象的length长度
+            // 执行这个函数的时候如果传入一个数!isArrayLike(obj)  == false 此时
+            // length属性取的就是数组的长度
+            // 如果传入的是一个对象,_.keys(obj) 返回的是key 组成的数组
+            // 无论是对象还是数组通过这个函数的处理都能够获取到靠谱的长度属性
+            var keys = !isArrayLike(obj) && _.keys(obj),
+                // 获取传入的对象的长度
+                length = (keys || obj).length,
+                // 对index进行操作 使用的3目运算符, 如果传入的dir大于零 index = 0
+                // 如果不大于零,返回的是 length - 1;
+                index = dir > 0 ? 0 : length - 1;
+            // Determine the initial value if none is provided.
+            // 这里的arguments是内置对象,如果传入的参数的长度小于3
+            // 这里调用的时候传入的是[1,2],function,0三个参数 因此不会走着条路;
+            if (arguments.length < 3) {
+                memo = obj[keys ? keys[index] : index];
+                index += dir;
+            }
+            //执行 itertor 函数
+            return iterator(obj, iteratee, memo, keys, index, length);
+        };
+    }
+    </script>
+</body>
+
+</html>

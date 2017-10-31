@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        // Shortcut function for checking if an object has a given property directly
+        // on itself (in other words, not on a prototype).
+        // 这个快捷函数是为了检测一些属性是否是属于自身的，换句话说不是在定义在原型上面的;
+        _.has = function(obj, key) {
+            return obj != null && hasOwnProperty.call(obj, key);
+        };
+
+        // hasOwnProperty 判断一个属性是在对象本身而不是继承自原型链上面, 
+        // 我们需要使用从Object.prototype继承而来的hasOwnProperty方法,
+        // hasOwnProperty是js中唯一一个处理对象属性而不会往上面遍历原型链的;
+        // 看下面的例子;
+        // Poisoning Object.prototype
+        // 荼毒的 object.prototype
+        Object.prototype.bar = 1;
+        var foo = {
+            goo: undefined
+        };
+        foo.bar; // 1
+        console.log('bar' in foo); // true
+        console.log(foo.hasOwnProperty('bar')); // false
+        console.log(foo.hasOwnProperty('goo')); // true
+        // 上面的函数中, 首先在Object原型上面定义一个属性bar赋值为1;
+        // 创建一个 foo 对象, 里面的 属性 goo 赋值 undefined;
+        // 使用 in 操作符的时候其实是区分不出来 这个属性是否是在对象本身上面定义的;
+        // 在这里，只有 hasOwnProperty 能给出正确答案，这在遍历一个对象的属性时是非常必要的。
+        // Javascript 中没有其他方法能判断一个属性是定义在对象本身还是继承自原型链
+
+        // hasOwnproperty 作为属性;
+        // Javascript 并未将 hasOwnProperty 设为敏感词
+        // 这意味着你可以拥有一个命名为 hasOwnProperty 的属性
+        // 这个时候你无法再使用本身的 hasOwnProperty 方法来判断属性
+        // 所以你需要使用外部的 hasOwnProperty 方法来进行判断
+
+        var foo = {
+            hasOwnproperty: function() {
+                console.log('走的是内部的函数');
+            },
+            bar: 'Here be dragons'
+        };
+        foo.hasOwnProperty('bar');
+        // Use another Object's hasOwnProperty and call it with 'this' set to foo
+        ({}).hasOwnProperty.call(foo, 'bar'); // true
+        // It's also possible to use hasOwnProperty from the Object
+        // prototype for this purpose
+        Object.prototype.hasOwnProperty.call(foo, 'bar'); // true
+    </script>
+</body>
+
+</html>

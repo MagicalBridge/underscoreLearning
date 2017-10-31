@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        // console.log(_.map([1, 2, 3], function(num) {
+        //     return num * 3;
+        // }));
+
+        console.log(_.map({
+            one: 1,
+            two: 2,
+            three: 3
+        }, function(num, key) {
+            return num * 3;
+        }))
+
+        // Return the results of applying the iteratee to each element.
+        // obj = (3) [1, 2, 3], iterate = ƒ (num), context = undefined
+        _.map = _.collect = function(obj, iteratee, context) {
+            //根据context确定不同的迭代函数;
+            iteratee = cb(iteratee, context);
+            //如果传参是对象，则获取它的 keys 值数组（短路表达式）
+            // isArrayLike函数传入的是对象 则返回false 取反则是true  
+            // 使用 _.keys方法返回是key值组成的数组;
+            var keys = !isArrayLike(obj) && _.keys(obj),
+                //如果 keys存在 说明传入的是对象,此时取出key 值的长度
+                //如果 传入的数组 则length 就是数组的长度;
+                length = (keys || obj).length,
+                // 
+                results = Array(length);
+
+            for (var index = 0; index < length; index++) {
+                // 传入的对象是 返回keys = [one,two,three]
+                // currentkey 就是 one two three
+                //执行函数的里面的逻辑 每一个obj[current] 得出的是value*3
+                var currentKey = keys ? keys[index] : index;
+                // 将算出来的数字放在 数组中
+                results[index] = iteratee(obj[currentKey], currentKey, obj);
+            }
+            // 返回数组的值;
+            return results;
+        };
+    </script>
+</body>
+
+</html>
