@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- <script src="./lib/underscore.js"></script> -->
+</head>
+
+<body>
+    <script>
+        var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+        var isArrayLike = function(collection) {
+            var length = collection != null && collection.length;
+            return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+        };
+
+        // 这个函数的作用就是将内部的函数返回并且通过传入的dir 控制index的值
+        // 这个index的值的作用 是为了后面的循环使用。
+        function createIndexFinder(dir) {
+            return function(array, predicate, context) {
+                var length = array != null && array.length;
+                console.log(length) // 6 本无可争议因为传入的数据 [1, 2, 3, 4, 5, 6]
+                var index = dir > 0 ? 0 : length - 1;
+                console.log(index) // 0 因为dir是1 所以index是0  
+                for (; index >= 0 && index < length; index += dir) {
+                    if (predicate(array[index], index, array)) {
+                        return index;
+                    }
+                }
+                return -1;
+            };
+        }
+
+        var findIndex = createIndexFinder(1);
+
+
+
+
+        // find函数接收三个参数  第一个参数是 需要解析的对象
+        // 第二个参数是传入的函数，第三个参数 执行的作用域
+        // findIndex 是函数 createIndexFinder 的返回值 这个函数的返回值
+        // 本身就是一个函数，createIndexFinder 接收一个 dir 参数 这个dir参数传入正数
+        // 还是负数直接决定了 内层函数的index 属性。
+        var find = function(obj, predicate, context) {
+            // 设置一个变量 key 
+            var key;
+            // 判断这个数据是不是一个类数组 如果是一个类数组
+            if (isArrayLike(obj)) {
+                // 这个变量key 接收 findIndex 的返回值 本例子中 key的值是  1
+                key = findIndex(obj, predicate, context);
+            } else {
+                key = findKey(obj, predicate, context);
+            }
+            // void 0 返回的是原生的 underfined 并且 key 不是-1 说明得到的key 是有效的
+            // 此时返回输出 对应的索引的值。
+            if (key !== void 0 && key !== -1) {
+                return obj[key];
+            }
+        };
+        // 执行的这个函数 传入的对象是一个数组，回调函数的作用是
+        // 设定规则，这里的例子的规则就是偶数 那么这个数组中 第一个符合的
+        // 数据就是 2 也就是说返回的是符合函数规则的第一个数据
+        var even = find([1, 2, 3, 4, 5, 6], function(num) {
+            return num % 2 == 0;
+        });
+        console.log(even)
+    </script>
+</body>
+
+</html>
