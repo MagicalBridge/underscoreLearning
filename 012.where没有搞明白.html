@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <script src="./lib/underscore.js"></script> -->
+    <script src="./lib/lodash.js"></script>
+    <title>filter</title>
+</head>
+
+<body>
+    <script>
+        var users = [{
+            'user': 'barney',
+            'age': 36,
+            'active': false,
+            'pets': ['hoppy']
+        }, {
+            'user': 'fred',
+            'age': 40,
+            'active': true,
+            'pets': ['baby puss', 'dino']
+        }];
+
+        // _.pluck(_.where(users, { 'age': 36, 'active': false }), 'user');
+        // // => ['barney']
+
+        // _.pluck(_.where(users, { 'pets': ['dino'] }), 'user');
+        // // => ['fred']
+
+
+        // 刚刚理解一个重要的问题 underscore 是一个函数式编程的
+        // 经典工具库，深刻理解里面的函数式编程的思想。
+        // console.log(JSON.stringify(_.where(users, {
+        //     'age': 36,
+        //     'active': false
+        // }), 'user'));
+
+        // console.log(_.pluck(_.where(users, {
+        //     'age': 36,
+        //     'active': false
+        // }), 'user'));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./lib/underscore.js"></script>
+    <title>JS中额内置arguments对象</title>
+</head>
+
+<body>
+    <script>
+        // 1. 最近在阅读 underscore.js 源码的时候遇到了js中很多的
+        // 基础的知识点盲区, arguments算是一个比较常用并且容易忽略的问题
+        // arguments 是js里面一个内置对象， 是一个很有意思的对象
+        // 任何一个function都存在arguments它是一个Object对象，
+        // argument代表当前函数的参数类数组集合， 有length
+        // 和index方法， 但是没有数组的push…… 等方法        
+
+
+        /*
+        1.arguments.callee的用法
+        arguments.callee表示引用当前正在执行的函数，
+        或者说是调用arguments.callee的函数对象的引用，
+        arguments.callee 在哪一个函数中运行，它就代表哪一个函数，
+        一般使用在匿名函数中。在匿名函数中，有时候会需要自己调用自己，但是由于
+        匿名函数是没有名字的，无名可调用。
+        这时候就可以使用arguments.callee来代替匿名函数。
+        */
+
+        // 下面代码就是用匿名函数实现的计算10的阶乘。用arguments.calle代替匿名函数本身
+        (function(n) {
+            if (n > 1) {
+                return n * arguments.callee(n - 1);
+            }
+            return n;
+        })(10)
+
+
+        // 执行下面的代码，可以看到打印出来的结果是true。 
+        // 注意， 此处用的是“ === ”。
+        // 就是说func与arguments.callee对象类型和值都相等。
+
+        var func = function() {
+            console.log(func === arguments.callee);
+        }
+        func();
+
+        // 一些常用的场景:判断参数的数目是否正确
+        function f(x, y, z) {
+            if (arguments.length != 3) {
+                throw new Error("参数数目不对");
+            }
+        }
+        // 对任意参数都支持的函数方法： 取多个数字中的最大值
+
+        function max() {
+            var m = Number.NEGATIVE_INFINITY;
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] > m) {
+                    m = arguments[i];
+                }
+            }
+            return m;
+        }
+    </script>
+</body>
+
+</html>

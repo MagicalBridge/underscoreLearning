@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <script src="./lib/underscore.js"></script> -->
+    <title>filter</title>
+</head>
+
+<body>
+    <script>
+        var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+        var isArrayLike = function(collection) {
+            var length = collection != null && collection.length;
+            return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+        };
+
+        // 这里面的obj 就是传入的那个数组  
+        // iteratee 遍历器函数,
+        var each = function(obj, iteratee, context) {
+            var i, length; // 这里的时候 i 和 length 都是undefined
+            // 通过isArrayLike()
+            if (isArrayLike(obj)) {
+                for (i = 0, length = obj.length; i < length; i++) {
+                    // 这个遍历器函数接收三个参数 对象的每个值 序号 对象本身。
+                    // 在filter函数中充当传递函数参数的作用。
+                    iteratee(obj[i], i, obj);
+                }
+            } else {
+                var keys = _.keys(obj);
+                for (i = 0, length = keys.length; i < length; i++) {
+                    iteratee(obj[keys[i]], keys[i], obj);
+                }
+            }
+            return obj;
+        };
+
+        // filter 函数 接收的三个参数
+        // 遍历list中的每个值，返回包含所有通过predicate真值检测的元素值 
+        // 这里的 predicate 就是调用的时候 第三个参数 执行作用域环境。
+        // predicate 这里使用的意思是 使基于什么样的规则
+        var filter = function(obj, predicate, context) {
+            // 创建一个空的数组对象。这个数组用来保存返回出来的过滤真值。
+            var results = [];
+            // 这里很形象的写出了each 函数的作用传递 三个参数
+            each(obj, function(value, index, list) {
+                // 在each内部执行一个函数 这个函数是filter函数
+                if (predicate(value, index, list)) {
+                    // 如果真值检测通过  则数组中就能够输入相关的额值
+                    results.push(value)
+                };
+            });
+            // 因此最后filter 会遍历整个obj 返回一个集合。
+            return results; // results = (3) [2, 4, 6];
+        };
+
+
+        // 这里面调用的filter函数传入的obj是一个数组，回调函数相当于规则
+        // 这个规则在很多的情况下都是自己定义的。
+        var evens = filter([1, 2, 3, 4, 5, 6], function(num) {
+            return num % 2 == 0;
+        });
+        console.log(JSON.stringify(evens));
+    </script>
+</body>
+
+</html>
