@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>字符串的replace方法</title>
+    <script src="./lib/underscore.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var a = "aee12";
+        a.replace(/\d+/g, function(s, c, d, f) {
+            console.log(s); // 12 
+            console.log(c); // 3
+            console.log(d); // aee12
+            console.log(f); // underfined
+        });
+        var b = "aee12";
+        b.replace(/(\w){3}(\d+)/g, function(s, c, d, f, g) {
+            console.log(s); // aee12
+            console.log(c); // e
+            console.log(d); // 12
+            console.log(f); // 0
+            console.log(g); // aee12
+        });
+
+        // 前几个参数依次对应匹配结果， 
+        // 如果有捕获分组，则按顺序对应第一个第二个。。。。， 
+        // 接下来是匹配开始位置，再接下来是整个字符串，
+        // 如果还有多余参数，则赋值undefined。
+
+
+        // 由于replace第二个参数是函数的情况比较少。
+        // 那么我们就来重点谈谈第二个参数为函数的情形。
+        // 首先这是replace函数的语法： 
+        // stringobject.replace(regexp/substr, replacement)
+        // 其中regexp/substr必需。规定字符串或要替换的模式的regexp对象。
+        // (请注意， 如果该值是一个字符串 则将它作为要检索的直接量文本模式， 而不是首先被转换为 regexp 对象。)
+        //  replacement必需。一个字符串值。 规定了替换文本或生成替换文本的函数。
+        // 最后返回一个新的字符串， 是用replacement替换了regexp的第一次匹配或所有匹配之后得到的。
+
+        // ECMAScript规定， replace（）方法的参数replacement可以是函数而不是字符串。 
+        // 在这种情况下，每个匹配都调用该函数， 它返回的字符串将替换文本使用。 
+        // 第一个参数表示匹配到的字符，第二个参数表示匹配到的字符最小索引位置（ RegExp.index），
+        // 第三个参数表示被匹配的字符串（ RegExp.input）。
+
+        // define    
+        (function(window) {
+            function fn(str) {
+                this.str = str;
+            }
+            fn.prototype.format = function() {
+                var arg = ______;
+                return this.str.replace(_______, function(a, b) {
+                    return arg[b] || '';
+                });
+            }
+            window.fn = fn;
+        })(window);
+        // use    
+        (function() {
+            var t = new fn('<p><a href="{0}">{1}</a><span>{2}</span></p>');
+            console.log(t.format('http://www.alibaba.com', 'Alibaba', 'Welcome'));
+        })();
+    </script>
+</body>
+
+</html>
