@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+        var isArrayLike = function(collection) {
+            var length = collection != null && collection.length;
+            return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+        };
+
+        // 这个函数非常的简单，就是返回一个入参
+        var identity = function(value) {
+            return value;
+        };
+
+        //  判断一个数据类型是不是对象
+        // 核心的思想是使用typeof 进行判断数据类型
+        // 我们知道typeof操作符返回六种数据类型
+        // 1. 'undefined' --- 这个值未定义；
+        // 2. 'boolean'    --- 这个值是布尔值；
+        // 3. 'string'        --- 这个值是字符串；
+        // 4. 'number'     --- 这个值是数值；
+        // 5. 'object'       --- 这个值是对象或null；
+        // 6. 'function'    --- 这个值是函数。
+
+        // 我们通常认为的函数 和 object 都能够很好的判断
+        // 但是这里容易忽视一个非常重要的问题 null 在js 中
+        // 使用 typeof null 返回的也是 'object' 
+        // 因此 还需要使用!!null 来进行进一步的判断。
+        // !! 是js中的语法糖 它相当于Bollean()
+        // 在判断null的时候返回的是false 因此将其排除出去。
+        var isObject = function(obj) {
+            var type = typeof obj;
+            return type === 'function' || type === 'object' && !!obj;
+        };
+        var nativeKeys = Object.keys;
+        var ObjProto = Object.prototype;
+        var hasOwnProperty = ObjProto.hasOwnProperty;
+
+        var has = function(obj, key) {
+            return obj != null && hasOwnProperty.call(obj, key);
+        };
+
+        var keys = function(obj) {
+            if (!isObject(obj)) return [];
+            if (nativeKeys) return nativeKeys(obj);
+            var keys = [];
+            for (var key in obj)
+                if (has(obj, key)) keys.push(key);
+            return keys;
+        };
+
+        var every = function(obj, predicate, context) {
+            var keys = !isArrayLike(obj) && _.keys(obj),
+                length = (keys || obj).length;
+            for (var index = 0; index < length; index++) {
+                var currentKey = keys ? keys[index] : index;
+                if (!predicate(obj[currentKey], currentKey, obj)) return false;
+            }
+            return true;
+        };
+
+        var result = every([true, 1, null, 'yes'], identity);
+        console.log(result)
+    </script>
+</body>
+
+</html>
