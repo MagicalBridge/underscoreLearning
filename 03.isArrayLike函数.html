@@ -12,7 +12,7 @@
         // Math.pow(2, 53) - 1 是 JavaScript 中能精确表示的最大数字
         var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
 
-        // 判断是否是 ArrayLike Object
+        // 判断是否是 类数组对象。
         // 类数组，即拥有 length 属性并且 length 属性值为 Number 类型的元素
         // 包括数组、arguments、HTML Collection 以及 NodeList 等等
         // 包括类似 {length: 10} 这样的对象
@@ -23,34 +23,46 @@
             // 返回布尔类型的值,
             return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
         };
-        // var collection1 = {"name": "louis","sex": "man","length": 5}
-        // var collection2 = [1, 2, 3];
-        // var collection3 = [];
-        // var collection4 = null;
-        // var collection5 = {"name": "louis","sex": "man","length": "5"
-        // var collection6 = "HelloWorld";
-        var collection7 = { one: 1,two: 2,three: 3}
+        var collection1 = {
+            "name": "louis",
+            "sex": "man",
+            "length": 5
+        }
+        var collection2 = [1, 2, 3];
+        var collection3 = [];
+        var collection4 = null;
+        var collection5 = {
+            "name": "louis",
+            "sex": "man",
+            "length": "5"
+        }
+        var collection6 = "HelloWorld";
+        var collection7 = {
+            one: 1,
+            two: 2,
+            three: 3
+        }
 
 
-        // console.log(isArrayLike(collection1)) // true;
-        // console.log(isArrayLike(collection2)) // true;
-        // console.log(isArrayLike(collection3)) // true;
-        // console.log(isArrayLike(collection4)) // false;
-        // console.log(isArrayLike(collection5)) // false;
-        // console.log(isArrayLike(collection6)) // true;
-        // console.log(isArrayLike(collection7)) // false;
-        //    使用2^54-1 来进行处理最大索引;
-        //
-        //           1.如果传入的是 空数组 length = 0;
-        //           2.如果传入的是 有长度的数组 显示的是长度
-        //           3.如果传入的是对象，里面没有length属性,能够由于length是undefined
-        //                            在第三行的判断中依然是返回 false
-        //           4.如果传入的是对象，并且里面具有length属性,并且length 属性的值是一个是number类型
-        //                            就会对这个函数产生欺骗显然的是isArrayLike返回值是true;
-        //                            这种情况这个函数返回的结果就不是我们想要的了;
-        //           5.如果传入的是对象，并且里面具有length属性,并且length 属性的值是一个是string类型
-        //                            这种情况下依然会能够正确判断;
-        //           6.如果传入的是一个字符串 ，字符串长度能够通过js的api 访问出来因此 能够遍历
+        console.log(isArrayLike(collection1)) // true;
+        console.log(isArrayLike(collection2)) // true;
+        console.log(isArrayLike(collection3)) // true;
+        console.log(isArrayLike(collection4)) // false;
+        console.log(isArrayLike(collection5)) // false;
+        console.log(isArrayLike(collection6)) // true;
+        console.log(isArrayLike(collection7)) // false;
+            //    使用2^54-1 来进行处理最大索引;
+            //
+            //           1.如果传入的是 空数组 length = 0;
+            //           2.如果传入的是 有长度的数组 显示的是长度
+            //           3.如果传入的是对象，里面没有length属性,能够由于length是undefined
+            //                            在第三行的判断中依然是返回 false
+            //           4.如果传入的是对象，并且里面具有length属性,并且length 属性的值是一个是number类型
+            //                            就会对这个函数产生欺骗显然的是isArrayLike返回值是true;
+            //                            这种情况这个函数返回的结果就不是我们想要的了;
+            //           5.如果传入的是对象，并且里面具有length属性,并且length 属性的值是一个是string类型
+            //                            这种情况下依然会能够正确判断;
+            //           6.如果传入的是一个字符串 ，字符串长度能够通过js的api 访问出来因此 能够遍历
     </script>
 </body>
 

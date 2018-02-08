@@ -21,7 +21,7 @@
             return value;
         };
 
-        //  判断一个数据类型是不是对象
+        // 判断一个数据类型是不是对象
         // 核心的思想是使用typeof 进行判断数据类型
         // 我们知道typeof操作符返回六种数据类型
         // 1. 'undefined' --- 这个值未定义；
@@ -41,35 +41,64 @@
             var type = typeof obj;
             return type === 'function' || type === 'object' && !!obj;
         };
+
         var nativeKeys = Object.keys;
         var ObjProto = Object.prototype;
         var hasOwnProperty = ObjProto.hasOwnProperty;
 
+        // 这个has函数,如果对象不是null 
         var has = function(obj, key) {
             return obj != null && hasOwnProperty.call(obj, key);
         };
 
         var keys = function(obj) {
-            if (!isObject(obj)) return [];
-            if (nativeKeys) return nativeKeys(obj);
+            // 如果判断传入的不是一个对象
+            if (!isObject(obj)) {
+                // 返回一个空数组。
+                return [];
+            }
+            if (nativeKeys) {
+                // 如果存在原生的对象 返回所有的 键名。
+                return nativeKeys(obj);
+            }
+            // 创建一个空的数组
             var keys = [];
-            for (var key in obj)
-                if (has(obj, key)) keys.push(key);
+            // 使用for in 循环遍历对象。
+            for (var key in obj) {
+                if (has(obj, key)) {
+                    keys.push(key);
+                }
+            }
             return keys;
         };
 
         var every = function(obj, predicate, context) {
+            // console.log(!isArrayLike(obj));
+            // 短路写法，非类数组则获取其keys
+            // 如果是类数组, isArrayLike(obj) 返回为true 如果不是类数组 返回false
+            // 这个length属性 是依赖于keys的
             var keys = !isArrayLike(obj) && _.keys(obj),
+                //如果keys 是false 则length是obj的长度属性。 
                 length = (keys || obj).length;
+            // console.log(keys); // 使用下面的例子的
+            console.log(obj.length); // 4
             for (var index = 0; index < length; index++) {
+                // currentKey:当keys 存在的时候 取的是 当前循环到的 这个key 
+                // 否则返回 currentKey 就是 index
                 var currentKey = keys ? keys[index] : index;
-                if (!predicate(obj[currentKey], currentKey, obj)) return false;
+                // 这里的identity return 就是value本身。
+                // 对identity 的返回值取反 如果是真说明本身的返回值是假
+                // 此时返回false。
+                if (!predicate(obj[currentKey], currentKey, obj)) {
+                    return false;
+                }
             }
+            // 如果遍历对象在求真函数中,每次返回的都是true,永远不会返回false
             return true;
         };
 
         var result = every([true, 1, null, 'yes'], identity);
-        console.log(result)
+        // console.log(result)
     </script>
 </body>
 
